@@ -1,0 +1,14 @@
+[
+  {
+    "name": "documentRecency",
+    "class": "org.apache.solr.ltr.feature.SolrFeature",
+    "params": {
+      "q": "{!func}recip( ms(NOW,update_dt), 3.16e-11, 1, 1)"
+    }
+  },
+  {
+    "name": "originalScore",
+    "class": "org.apache.solr.ltr.feature.OriginalScoreFeature",
+    "params": {}
+  }
+]

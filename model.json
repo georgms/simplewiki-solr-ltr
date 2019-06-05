@@ -1,0 +1,19 @@
+{
+  "store": "_DEFAULT_",
+  "name": "_DEFAULT_",
+  "class": "org.apache.solr.ltr.model.LinearModel",
+  "features": [
+    {
+      "name": "documentRecency"
+    },
+    {
+      "name": "originalScore"
+    }
+  ],
+  "params": {
+    "weights": {
+      "documentRecency": 0.2,
+      "originalScore": 1.0
+    }
+  }
+}

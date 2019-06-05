@@ -65,3 +65,4 @@ typings/
 # User-specific stuff
 .idea/
 /JetBrains.Dockerfile
+/simplewiki.json

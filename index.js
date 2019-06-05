@@ -39,14 +39,18 @@ function compareRankings(idealRanking, actualRanking) {
 async function main() {
     await solr.setup();
 
-    let wikiDocuments = await wiki.readDump("simplewiki.json");
-    await solr.import(wikiDocuments);
+    // let wikiDocuments = await wiki.readDump("simplewiki.json");
+    // await solr.deleteAllDocuments();
+    // await solr.import(wikiDocuments);
 
-    let queries = await readQueries("top-queries.txt");
-    let idealRanking = await wiki.fetchRankings(queries);
-    let actualRanking = await solr.fetchRankings(queries);
+    await solr.uploadFeatures();
+    await solr.uploadModel();
 
-    compareRankings(idealRanking, actualRanking);
+    // let queries = await readQueries("top-queries.txt");
+    // let idealRanking = await wiki.fetchRankings(queries);
+    // let actualRanking = await solr.fetchRankings(queries);
+    //
+    // compareRankings(idealRanking, actualRanking);
 }
 
 main().then(() => console.log("All done"));
