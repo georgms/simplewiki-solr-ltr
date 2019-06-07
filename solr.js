@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 
-const SOLR_BASE_URL = "http://10.199.0.1:8983/solr/simplewiki";
+const SOLR_BASE_URL = "http://localhost:8983/solr/simplewiki";
 
 module.exports = {
     async deleteAllDocuments() {
@@ -67,7 +67,7 @@ module.exports = {
     async fetchRanking(query) {
         let solrParams = {
             q: query,
-            qf: "title_txt_en_split opening_txt_en_split text_txt_en_split category_txts_en auxiliary_text_txts_en redirect_txts_en heading_txts_en",
+            qf: "title_txt_en_split opening_txt_en_split text_txt_en_split category_txts_en_split auxiliary_text_txts_en_split redirect_txts_en_split heading_txts_en_split",
             wt: "json",
             fl: "title_txt_en_split,[features]",
             rows: 1000000,
