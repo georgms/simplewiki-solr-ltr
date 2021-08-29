@@ -12,7 +12,7 @@ module.exports = {
         return ranking;
     },
 
-    async fetchRanking(query) {
+    fetchRanking: async function (query) {
         let baseUrl = "https://simple.wikipedia.org/w/api.php";
         let params = {
             action: "query",
@@ -21,13 +21,16 @@ module.exports = {
             srsearch: query
         };
 
-        return axios.get(baseUrl, {
-            method: "GET",
-            params: params,
-            responseType: "json"
-        })
-            .then(response => response.data.query.search.map(result => result["title"]))
-            .catch(error => console.error(`Could not fetch Wiki results for $query: ` + error));
+        try {
+            let response = await axios.get(baseUrl, {
+                method: "GET",
+                params: params,
+                responseType: "json"
+            });
+            return response.data.query.search.map(result => result["title"]);
+        } catch (error) {
+            console.error(`Could not fetch Wiki results for ${query}: ${error}`);
+        }
     },
 
     async readDump(filename) {

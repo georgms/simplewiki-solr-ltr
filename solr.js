@@ -67,16 +67,17 @@ module.exports = {
     async fetchRanking(query) {
         let solrParams = {
             q: query,
-            qf: "title_txt_en_split opening_txt_en_split text_txt_en_split category_txts_en auxiliary_text_txts_en redirect_txts_en heading_txts_en",
+            qf: "title_txt_en_split^10 opening_txt_en_split text_txt_en_split category_txts_en_split auxiliary_text_txts_en_split" +
+                    " redirect_txts_en_split heading_txts_en_split",
             wt: "json",
-            fl: "title_txt_en_split,[features]",
+            fl: "title_txt_en_split",
             rows: 1000000,
             boost: "popularity_score_f"
         };
 
-        return axios.get(SOLR_BASE_URL + "/browse", {params: solrParams})
-            .then(response => response.data["response"]["docs"].map(doc => doc["title_txt_en_split"]))
-            .catch(error => console.error(`Could not fetch Wiki results for $query: ` + error));
+        return axios.get(SOLR_BASE_URL + "/browse", { params: solrParams })
+                .then(response => response.data["response"]["docs"].map(doc => doc["title_txt_en_split"]))
+                .catch(error => console.error(`Could not fetch Wiki results for $query: ` + error, error.response));
     },
 
     async addDynamicField(fieldConfig) {
@@ -130,7 +131,7 @@ module.exports = {
 
     async setup() {
         let txtsEnSplittingField = {
-            "name": "*_txts_en_splitting",
+            "name": "*_txts_en_split",
             "type": "text_en_splitting",
             "multiValued": "true",
             "stored": "true",

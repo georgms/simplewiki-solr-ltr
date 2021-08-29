@@ -20,37 +20,42 @@ async function readQueries(filename) {
     return queries;
 }
 
-function compareRankings(idealRanking, actualRanking) {
-    let augmentedRanking = {};
+async function calculateNdcgs(queries) {
+    queries.forEach(async query => {
+        console.log(query);
+        let wikiRanking = await wiki.fetchRanking(query);
+        wikiRanking = wikiRanking.slice(0, 20);
+        let solrRanking = await solr.fetchRanking(query);
+        solrRanking = solrRanking.slice(0, 20);
 
-    Object.keys(idealRanking).forEach(query => {
-        augmentedRanking[query] = {};
-
-        let idealResults = idealRanking[query];
-        let actualResults = actualRanking[query];
-        idealResults.forEach(idealResult => {
-            augmentedRanking[query][idealResult] = actualResults.indexOf(idealResult);
-        })
+        let dcg = 0;
+        let idcg = 0;
+        solrRanking.forEach((document, index) => {
+            const i = index + 1;
+            const rel = wikiRanking.length - Math.max(0, wikiRanking.indexOf(wikiRanking));
+            const idealRank = wikiRanking.length - index;
+            console.log(wikiRanking.length, index);
+            console.log(rel, idealRank);
+            dcg += (Math.pow(2, rel) - 1) / (Math.log2(i + 1));
+            idcg += (Math.pow(2, idealRank) - 1) / (Math.log2(i + 1));
+            console.log(dcg, idcg, dcg / idcg);
+        });
     });
-
-    console.log(augmentedRanking);
 }
 
 async function main() {
-    await solr.setup();
-
+    // await solr.setup();
+    //
     // let wikiDocuments = await wiki.readDump("simplewiki.json");
     // await solr.deleteAllDocuments();
     // await solr.import(wikiDocuments);
-
-    await solr.uploadFeatures();
-    await solr.uploadModel();
-
-    // let queries = await readQueries("top-queries.txt");
-    // let idealRanking = await wiki.fetchRankings(queries);
-    // let actualRanking = await solr.fetchRankings(queries);
     //
-    // compareRankings(idealRanking, actualRanking);
+    // await solr.uploadFeatures();
+    //
+    // await solr.uploadModel();
+    //
+    let queries = await readQueries("top-queries.txt");
+    calculateNdcgs(queries);
 }
 
 main().then(() => console.log("All done"));
